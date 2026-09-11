@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BiggyBurger — Open the web</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<main class="wrap">
+  <div class="burger">🍔</div>
+  <h1>BiggyBurger</h1>
+  <p class="tag">Open a website through BiggyBurger.</p>
+  <form id="go">
+    <input id="url" autocomplete="url" inputmode="url" placeholder="Search or enter a website" aria-label="Website address">
+    <button>Go</button>
+  </form>
+  <p id="error" class="error"></p>
+  <p class="note">No account required. Only public HTTP/HTTPS sites are supported.</p>
+</main>
+<script>
+const form=document.querySelector("#go"), input=document.querySelector("#url"), error=document.querySelector("#error");
+form.addEventListener("submit", async e=>{
+  e.preventDefault(); error.textContent="";
+  const r=await fetch("/api/resolve",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({url:input.value})});
+  const data=await r.json();
+  if(!r.ok){error.textContent=data.error||"Unable to open that address.";return;}
+  location.href=data.url;
+});
+</script>
+</body>
+</html>
